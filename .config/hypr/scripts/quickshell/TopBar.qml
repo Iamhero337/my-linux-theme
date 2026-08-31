@@ -1511,9 +1511,9 @@ Variants {
                                     }
                                 }
 
-                                property real targetWidth: barWindow.isDesktop ? 0 : btLayoutRow.implicitWidth + barWindow.s(24)
+                                property real targetWidth: (!barWindow.isBtOn || barWindow.isDesktop) ? 0 : btLayoutRow.implicitWidth + barWindow.s(24)
                                 width: targetWidth
-                                visible: targetWidth > 0
+                                visible: targetWidth > 0 || width > 0
                                 Behavior on width { NumberAnimation { duration: 500; easing.type: Easing.OutQuint } }
 
                                 scale: isHovered ? 1.05 : 1.0
