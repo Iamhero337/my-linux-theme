@@ -1423,7 +1423,7 @@ Variants {
                                     } else if (bytes >= 1024) {
                                         return (bytes / 1024).toFixed(0) + " KB/s";
                                     } else {
-                                        return (bytes / 1024).toFixed(1) + " KB/s";
+                                        return Math.round(bytes) + " B/s";
                                     }
                                 }
 
@@ -1432,30 +1432,61 @@ Variants {
                                     anchors.verticalCenter: parent.verticalCenter
                                     anchors.left: parent.left
                                     anchors.leftMargin: barWindow.s(10)
-                                    spacing: barWindow.s(6)
+                                    spacing: barWindow.s(8)
 
-                                    Text { 
-                                        id: netSpeedText
+                                    // Column 1: Speeds (Upload UP, Download DOWN)
+                                    Column {
                                         anchors.verticalCenter: parent.verticalCenter
-                                        text: (barWindow.isWifiOn || barWindow.showEthernet) ? "↓ " + wifiPill.formatNetSpeed(SysData.netRx) : "Off"
-                                        font.family: "JetBrains Mono"
-                                        font.pixelSize: barWindow.s(12)
-                                        font.weight: Font.Bold
-                                        color: (barWindow.showEthernet && barWindow.ethStatus === "Connected") || barWindow.isWifiOn ? mocha.base : mocha.subtext0
+                                        spacing: 0
+
+                                        Text { 
+                                            id: upSpeedText
+                                            text: (barWindow.isWifiOn || barWindow.showEthernet) ? "▲ " + wifiPill.formatNetSpeed(SysData.netTx) : "Off"
+                                            font.family: "JetBrains Mono"
+                                            font.pixelSize: barWindow.s(9)
+                                            font.weight: Font.Bold
+                                            color: (barWindow.showEthernet && barWindow.ethStatus === "Connected") || barWindow.isWifiOn ? mocha.base : mocha.subtext0
+                                        }
+
+                                        Text { 
+                                            id: downSpeedText
+                                            text: (barWindow.isWifiOn || barWindow.showEthernet) ? "▼ " + wifiPill.formatNetSpeed(SysData.netRx) : ""
+                                            visible: text !== ""
+                                            font.family: "JetBrains Mono"
+                                            font.pixelSize: barWindow.s(9)
+                                            font.weight: Font.Bold
+                                            color: (barWindow.showEthernet && barWindow.ethStatus === "Connected") || barWindow.isWifiOn ? mocha.base : mocha.subtext0
+                                        }
                                     }
 
-                                    Text { 
-                                        id: wifiText
+                                    // Column 2: Connection (Icon ABOVE Name)
+                                    Column {
                                         anchors.verticalCenter: parent.verticalCenter
-                                        text: barWindow.showEthernet ? (barWindow.ethStatus === "Connected" ? "ETH" : "") : (barWindow.isWifiOn && barWindow.wifiSsid !== "" ? barWindow.wifiSsid : "")
-                                        visible: text !== ""
-                                        font.family: "JetBrains Mono"
-                                        font.pixelSize: barWindow.s(9)
-                                        font.weight: Font.Medium
-                                        opacity: 0.65
-                                        color: (barWindow.showEthernet && barWindow.ethStatus === "Connected") || barWindow.isWifiOn ? mocha.base : mocha.subtext0
-                                        width: Math.min(implicitWidth, barWindow.s(55))
-                                        elide: Text.ElideRight 
+                                        spacing: 0
+                                        visible: barWindow.isWifiOn || barWindow.showEthernet
+
+                                        Text { 
+                                            id: wifiIconText
+                                            anchors.horizontalCenter: parent.horizontalCenter
+                                            text: barWindow.showEthernet ? "󰈀" : barWindow.wifiIcon
+                                            font.family: "Iosevka Nerd Font"
+                                            font.pixelSize: barWindow.s(11)
+                                            color: (barWindow.showEthernet && barWindow.ethStatus === "Connected") || barWindow.isWifiOn ? mocha.base : mocha.subtext0
+                                        }
+
+                                        Text { 
+                                            id: wifiText
+                                            anchors.horizontalCenter: parent.horizontalCenter
+                                            text: barWindow.showEthernet ? (barWindow.ethStatus === "Connected" ? "ETH" : "") : (barWindow.wifiSsid !== "" ? barWindow.wifiSsid : "Wi-Fi")
+                                            visible: text !== ""
+                                            font.family: "JetBrains Mono"
+                                            font.pixelSize: barWindow.s(8)
+                                            font.weight: Font.Medium
+                                            opacity: 0.75
+                                            color: (barWindow.showEthernet && barWindow.ethStatus === "Connected") || barWindow.isWifiOn ? mocha.base : mocha.subtext0
+                                            width: Math.min(implicitWidth, barWindow.s(55))
+                                            elide: Text.ElideRight 
+                                        }
                                     }
                                 }
                                 MouseArea { id: wifiMouse; hoverEnabled: true; anchors.fill: parent; onClicked: Quickshell.execDetached(["bash", "-c", "~/.config/hypr/scripts/qs_manager.sh toggle network wifi"]) }
