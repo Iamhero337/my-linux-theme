@@ -1,0 +1,12 @@
+[Unit]
+Description=Touchpad Gesture Daemon for Hyprland
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /home/hero/.config/hypr/scripts/gesture_daemon.py
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=default.target

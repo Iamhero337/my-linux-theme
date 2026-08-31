@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Hyprland Shortcut Manager
+Comment=Manage Hyprland Keybindings
+Exec=/usr/bin/env python3 /home/hero/.local/share/hypr-shortcuts/shortcut_manager.py
+Icon=preferences-desktop-keyboard-shortcuts
+Terminal=false
+Type=Application
+Categories=Settings;Utility;

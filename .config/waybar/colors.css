@@ -1,0 +1,43 @@
+/* Matugen Generated Colors for Waybar (Catppuccin + Material 3 Theme) */
+
+@define-color base #110d11;
+@define-color mantle #1f1a1f;
+@define-color crust #171217;
+@define-color text #eae0e7;
+@define-color subtext0 #cfc3cd;
+@define-color subtext1 #988d97;
+@define-color surface0 #231e23;
+@define-color surface1 #2e282e;
+@define-color surface2 #393338;
+
+@define-color primary #e9b5ef;
+@define-color on_primary #472150;
+@define-color primary_container #603768;
+@define-color on_primary_container #fdd6ff;
+
+@define-color secondary #d6c0d6;
+@define-color on_secondary #3a2b3c;
+@define-color secondary_container #524153;
+@define-color on_secondary_container #f3dbf2;
+
+@define-color tertiary #f5b7b0;
+@define-color on_tertiary #4c2521;
+@define-color tertiary_container #673b36;
+@define-color on_tertiary_container #ffdad5;
+
+@define-color error #ffb4ab;
+@define-color on_error #690005;
+@define-color error_container #93000a;
+
+/* Catppuccin color aliases */
+@define-color blue #e9b5ef;
+@define-color sapphire #603768;
+@define-color peach #f5b7b0;
+@define-color green #d6c0d6;
+@define-color red #ffb4ab;
+@define-color mauve #e9b5ef;
+@define-color pink #673b36;
+@define-color yellow #524153;
+@define-color maroon #93000a;
+@define-color teal #d6c0d6;
+@define-color lavender #e9b5ef;

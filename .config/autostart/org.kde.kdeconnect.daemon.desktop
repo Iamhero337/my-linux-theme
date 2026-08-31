@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=KDE Connect
+Comment=Connect your smartphone and your computer
+Exec=/usr/bin/kdeconnect-indicator
+Icon=kdeconnect
+Type=Application
+Terminal=false
+Categories=Network;Utility;
+X-KDE-autostart-phase=2
+X-GNOME-Autostart-enabled=true

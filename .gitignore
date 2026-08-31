@@ -1,0 +1,16 @@
+# Logs & Cache
+*.log
+*.qslog
+*.cache
+__pycache__/
+*.pyc
+
+# Runtime files & sockets
+*.fifo
+*.sock
+.temp*
+
+# Personal Tokens & Keys
+*.pem
+*.key
+.env
