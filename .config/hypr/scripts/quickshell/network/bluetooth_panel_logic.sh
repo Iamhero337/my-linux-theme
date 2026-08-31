@@ -44,6 +44,14 @@ get_audio_profile() {
     echo "Connected"
 }
 
+start_scan_if_needed() {
+    if ! timeout 0.5 bluetoothctl show 2>/dev/null | grep -q "Discovering: yes"; then
+        rfkill unblock bluetooth 2>/dev/null || true
+        bluetoothctl scan on >/dev/null 2>&1 &
+        echo $! > "$PID_FILE"
+    fi
+}
+
 get_status() {
     # 1. Zero-latency hardware presence check (Bypasses the 1-second timeout entirely)
     if ! ls -1d /sys/class/bluetooth/hci* &>/dev/null; then
@@ -72,9 +80,10 @@ get_status() {
     devices_json="[]"
 
     if [ "$power" == "on" ]; then
-        paired_macs=$(bluetoothctl devices Paired)
-        mapfile -t devices < <(bluetoothctl devices)
-        mapfile -t connected_info_lines < <(bluetoothctl devices Connected)
+        start_scan_if_needed
+        paired_macs=$(bluetoothctl devices Paired 2>/dev/null)
+        mapfile -t devices < <(bluetoothctl devices 2>/dev/null)
+        mapfile -t connected_info_lines < <(bluetoothctl devices Connected 2>/dev/null)
         
         # THE FIX: Cache pactl output ONCE per script execution with a strict timeout
         cached_cards=$(timeout 0.5 pactl list cards 2>/dev/null)
@@ -160,12 +169,17 @@ get_status() {
 }
 
 toggle_power() {
-    if bluetoothctl show | grep -q "Powered: yes"; then
+    if timeout 0.5 bluetoothctl show 2>/dev/null | grep -q "Powered: yes"; then
+        if [ -f "$PID_FILE" ]; then kill "$(cat "$PID_FILE")" 2>/dev/null || true; rm -f "$PID_FILE"; fi
+        bluetoothctl scan off >/dev/null 2>&1 || true
         bluetoothctl power off
     else
+        rfkill unblock bluetooth 2>/dev/null || true
         bluetoothctl power on
+        sleep 0.4
+        start_scan_if_needed
     fi
-    sleep 0.5
+    sleep 0.3
 }
 
 connect_dev() {
