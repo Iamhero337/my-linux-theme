@@ -50,7 +50,7 @@ Variants {
             }
 
             property real baseScale: scaler.baseScale
-            property real barScale: 0.75
+            property real barScale: Config.topbarScale
 
             function s(val) { 
                 return Math.round(scaler.s(val) * barScale); 
@@ -59,7 +59,7 @@ Variants {
             property int barHeight: s(48)
 
             height: barHeight
-            margins { top: 0; bottom: 0; left: s(4); right: s(4) }
+            margins { top: Config.topbarFlush ? 0 : s(8); bottom: 0; left: s(4); right: s(4) }
             exclusiveZone: barHeight 
             color: "transparent"
 
@@ -1512,7 +1512,7 @@ Variants {
                                     }
                                 }
 
-                                property real targetWidth: (!barWindow.isBtOn || barWindow.isDesktop) ? 0 : btLayoutRow.implicitWidth + barWindow.s(24)
+                                property real targetWidth: ((Config.btAutoHide && !barWindow.isBtOn) || barWindow.isDesktop) ? 0 : btLayoutRow.implicitWidth + barWindow.s(24)
                                 width: targetWidth
                                 visible: targetWidth > 0 || width > 0
                                 Behavior on width { NumberAnimation { duration: 500; easing.type: Easing.OutQuint } }

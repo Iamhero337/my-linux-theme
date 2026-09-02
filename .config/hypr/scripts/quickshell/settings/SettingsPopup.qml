@@ -124,7 +124,7 @@ Item {
     }
 
     function maxHighlightForTab(tab) {
-        if (tab === 0) return 6;
+        if (tab === 0) return 10;
         if (tab === 1) return 3;
         if (tab === 2) return dynamicKeybindsModel.count - 1;
         if (tab === 4) return dynamicStartupModel.count - 1;
@@ -138,6 +138,15 @@ Item {
             } else if (root.highlightedBox === 1) {
                 Config.topbarHelpIcon = !Config.topbarHelpIcon;
             } else if (root.highlightedBox === 2) {
+            } else if (root.highlightedBox === 7) {
+            } else if (root.highlightedBox === 8) {
+                Config.topbarFlush = !Config.topbarFlush;
+                Config.saveAppSettings();
+            } else if (root.highlightedBox === 9) {
+                Config.btAutoHide = !Config.btAutoHide;
+                Config.saveAppSettings();
+            } else if (root.highlightedBox === 10) {
+                Config.sh("gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'; hyprctl setcursor Bibata-Modern-Classic 24; notify-send 'Theme' 'System Dark Theme Active'");
             } else if (root.highlightedBox === 3) {
                 if (generalLoader.item) generalLoader.item.focusLangInput();
             } else if (root.highlightedBox === 4) {
@@ -178,10 +187,11 @@ Item {
         if (root.currentTab === 0 && generalLoader.item) {
             let approxY = 0;
             if (box === 0 || box === 1) approxY = 0;
-            else if (box === 2) approxY = root.s(120);
-            else if (box === 3 || box === 4) approxY = root.s(240);
-            else if (box === 5) approxY = root.s(400);
-            else if (box === 6) approxY = root.s(520);
+            else if (box === 2 || box === 7) approxY = root.s(120);
+            else if (box === 8 || box === 9 || box === 10) approxY = root.s(240);
+            else if (box === 3 || box === 4) approxY = root.s(380);
+            else if (box === 5) approxY = root.s(520);
+            else if (box === 6) approxY = root.s(660);
             generalLoader.item.scrollToBox(approxY);
         } else if (root.currentTab === 1 && weatherLoader.item) {
             let approxY = 0;
@@ -305,6 +315,11 @@ Item {
                 Config.uiScale = Math.max(0.5, (Config.uiScale - 0.1).toFixed(1));
                 event.accepted = true;
                 return;
+            } else if (root.currentTab === 0 && root.highlightedBox === 7) {
+                Config.topbarScale = Math.max(0.5, parseFloat((Config.topbarScale - 0.05).toFixed(2)));
+                Config.saveAppSettings();
+                event.accepted = true;
+                return;
             } else if (root.currentTab === 0 && root.highlightedBox === 6) {
                 Config.workspaceCount = Math.max(2, Config.workspaceCount - 1);
                 event.accepted = true;
@@ -314,6 +329,11 @@ Item {
         if (event.key === Qt.Key_Right) {
             if (root.currentTab === 0 && root.highlightedBox === 2) {
                 Config.uiScale = Math.min(2.0, (Config.uiScale + 0.1).toFixed(1));
+                event.accepted = true;
+                return;
+            } else if (root.currentTab === 0 && root.highlightedBox === 7) {
+                Config.topbarScale = Math.min(1.5, parseFloat((Config.topbarScale + 0.05).toFixed(2)));
+                Config.saveAppSettings();
                 event.accepted = true;
                 return;
             } else if (root.currentTab === 0 && root.highlightedBox === 6) {
@@ -884,6 +904,10 @@ Item {
         { tab: 0, boxIndex: 0, label: "Guide on startup",  desc: "Launch on login",        icon: "󰑊", color: "peach" },
         { tab: 0, boxIndex: 1, label: "Help icon",         desc: "Show button in topbar",  icon: "󰋖", color: "blue" },
         { tab: 0, boxIndex: 2, label: "UI Scale",          desc: "Base size scalar",       icon: "󰁦", color: "sapphire" },
+        { tab: 0, boxIndex: 7, label: "TopBar Scale",      desc: "Scale top panel size",   icon: "󰈚", color: "sapphire" },
+        { tab: 0, boxIndex: 8, label: "TopBar Screen Flush", desc: "Flush with top edge",  icon: "󰍹", color: "teal" },
+        { tab: 0, boxIndex: 9, label: "Bluetooth Auto-Hide", desc: "Hide pill when BT off", icon: "󰂲", color: "blue" },
+        { tab: 0, boxIndex: 10, label: "System Dark Theme", desc: "GTK, Qt, Portal theme", icon: "󰖔", color: "mauve" },
         { tab: 0, boxIndex: 3, label: "Keyboard layouts",  desc: "Matches hyprland.conf",  icon: "󰌌", color: "green" },
         { tab: 0, boxIndex: 4, label: "Layout shortcut",   desc: "Toggle combination",     icon: "󰯍", color: "teal" },
         { tab: 0, boxIndex: 5, label: "Wallpaper directory",desc: "Absolute source path",  icon: "󰋩", color: "mauve" },
@@ -1340,6 +1364,313 @@ Item {
                                         }
                                         MouseArea { id: sPlusMa; anchors.fill: parent; hoverEnabled: true; onClicked: Config.uiScale = Math.min(2.0, (Config.uiScale + 0.1).toFixed(1)) }
                                     }
+                                }
+                            }
+                        }
+                    }
+
+                    // ── Box 7: TopBar Scale ──────────────────────────────────
+                    Rectangle {
+                        id: boxTbScale
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: colTbScale.implicitHeight + root.s(32)
+                        radius: root.s(12)
+
+                        property bool isActive: root.highlightedBox === 7
+                        color: isActive ? root.sapphire : root.surface0
+                        border.color: isActive ? root.sapphire : root.surface1
+                        border.width: 1
+                        Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+
+                        MouseArea { anchors.fill: parent; onClicked: root.highlightedBox = 7; z: -1 }
+
+                        ColumnLayout {
+                            id: colTbScale
+                            anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right; anchors.margins: root.s(16)
+                            RowLayout {
+                                Layout.fillWidth: true; spacing: root.s(14)
+                                Item {
+                                    Layout.preferredWidth: root.s(22); Layout.alignment: Qt.AlignVCenter
+                                    Text {
+                                        anchors.centerIn: parent; text: "󰈚"
+                                        font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(18)
+                                        color: boxTbScale.isActive ? root.base : root.sapphire
+                                        Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                    }
+                                }
+                                ColumnLayout {
+                                    Layout.fillWidth: true; Layout.alignment: Qt.AlignVCenter; spacing: root.s(3)
+                                    Text {
+                                        text: "TopBar Scale"; font.family: "Inter"; font.weight: Font.Medium; font.pixelSize: root.s(14)
+                                        color: boxTbScale.isActive ? root.base : root.text; Layout.fillWidth: true
+                                        Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                    }
+                                    Text {
+                                        text: "Scale top panel size & proportions"; font.family: "Inter"; font.pixelSize: root.s(11)
+                                        color: boxTbScale.isActive ? Qt.alpha(root.base, 0.75) : Qt.alpha(root.subtext0, 0.7); Layout.fillWidth: true
+                                        Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                    }
+                                }
+                                RowLayout {
+                                    Layout.alignment: Qt.AlignVCenter | Qt.AlignRight; spacing: root.s(10)
+                                    Rectangle {
+                                        width: root.s(28); height: root.s(28); radius: root.s(6)
+                                        color: tbMinusMa.pressed
+                                            ? Qt.alpha(root.base, 0.3)
+                                            : (tbMinusMa.containsMouse ? Qt.alpha(root.base, 0.2) : Qt.alpha(root.base, 0.15))
+                                        scale: tbMinusMa.pressed ? 0.90 : (tbMinusMa.containsMouse ? 1.08 : 1.0)
+                                        Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutQuart } }
+                                        Behavior on color { ColorAnimation { duration: 200 } }
+                                        Text {
+                                            anchors.centerIn: parent; text: "-"
+                                            font.family: "JetBrains Mono"; font.weight: Font.Medium; font.pixelSize: root.s(15)
+                                            color: boxTbScale.isActive ? root.base : root.sapphire
+                                            Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                        }
+                                        MouseArea {
+                                            id: tbMinusMa; anchors.fill: parent; hoverEnabled: true
+                                            onClicked: {
+                                                Config.topbarScale = Math.max(0.5, parseFloat((Config.topbarScale - 0.05).toFixed(2)));
+                                                Config.saveAppSettings();
+                                            }
+                                        }
+                                    }
+                                    Text { 
+                                        text: Math.round(Config.topbarScale * 100) + "%"
+                                        font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: root.s(13)
+                                        color: boxTbScale.isActive ? root.base : root.sapphire
+                                        Layout.minimumWidth: root.s(42); horizontalAlignment: Text.AlignHCenter
+                                        Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                    }
+                                    Rectangle {
+                                        width: root.s(28); height: root.s(28); radius: root.s(6)
+                                        color: tbPlusMa.pressed
+                                            ? Qt.alpha(root.base, 0.3)
+                                            : (tbPlusMa.containsMouse ? Qt.alpha(root.base, 0.2) : Qt.alpha(root.base, 0.15))
+                                        scale: tbPlusMa.pressed ? 0.90 : (tbPlusMa.containsMouse ? 1.08 : 1.0)
+                                        Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutQuart } }
+                                        Behavior on color { ColorAnimation { duration: 200 } }
+                                        Text {
+                                            anchors.centerIn: parent; text: "+"
+                                            font.family: "JetBrains Mono"; font.weight: Font.Medium; font.pixelSize: root.s(15)
+                                            color: boxTbScale.isActive ? root.base : root.sapphire
+                                            Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                        }
+                                        MouseArea {
+                                            id: tbPlusMa; anchors.fill: parent; hoverEnabled: true
+                                            onClicked: {
+                                                Config.topbarScale = Math.min(1.5, parseFloat((Config.topbarScale + 0.05).toFixed(2)));
+                                                Config.saveAppSettings();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // ── Box 8: TopBar Screen Flush ───────────────────────────
+                    Rectangle {
+                        id: boxTbFlush
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: colTbFlush.implicitHeight + root.s(32)
+                        radius: root.s(12)
+
+                        property bool isActive: root.highlightedBox === 8
+                        color: isActive ? root.teal : root.surface0
+                        border.color: isActive ? root.teal : root.surface1
+                        border.width: 1
+                        Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+
+                        MouseArea { anchors.fill: parent; onClicked: root.highlightedBox = 8; z: -1 }
+
+                        RowLayout {
+                            id: colTbFlush
+                            anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right; anchors.margins: root.s(16)
+                            spacing: root.s(14)
+                            Item {
+                                Layout.preferredWidth: root.s(22); Layout.alignment: Qt.AlignVCenter
+                                Text {
+                                    anchors.centerIn: parent; text: "󰍹"
+                                    font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(18)
+                                    color: boxTbFlush.isActive ? root.base : root.teal
+                                    Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                }
+                            }
+                            ColumnLayout {
+                                Layout.fillWidth: true; Layout.alignment: Qt.AlignVCenter; spacing: root.s(3)
+                                Text {
+                                    text: "TopBar Screen Flush"; font.family: "Inter"; font.weight: Font.Medium; font.pixelSize: root.s(14)
+                                    color: boxTbFlush.isActive ? root.base : root.text; Layout.fillWidth: true
+                                    Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                }
+                                Text {
+                                    text: "Remove space at top edge of screen"; font.family: "Inter"; font.pixelSize: root.s(11)
+                                    color: boxTbFlush.isActive ? Qt.alpha(root.base, 0.75) : Qt.alpha(root.subtext0, 0.7); Layout.fillWidth: true
+                                    Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                }
+                            }
+                            Rectangle {
+                                Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
+                                Layout.preferredWidth: root.s(40); Layout.preferredHeight: root.s(22); radius: root.s(11)
+                                scale: tbFlushMa.containsMouse ? 1.05 : 1.0
+                                Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutBack } }
+                                color: Config.topbarFlush
+                                    ? (boxTbFlush.isActive ? root.base : root.teal)
+                                    : Qt.alpha(root.surface2, boxTbFlush.isActive ? 0.4 : 1.0)
+                                Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                Rectangle {
+                                    width: root.s(16); height: root.s(16); radius: root.s(8)
+                                    color: Config.topbarFlush
+                                        ? (boxTbFlush.isActive ? root.teal : root.base)
+                                        : (boxTbFlush.isActive ? root.teal : root.surface0)
+                                    y: root.s(3); x: Config.topbarFlush ? root.s(21) : root.s(3)
+                                    Behavior on x { NumberAnimation { duration: 250; easing.type: Easing.OutBack } }
+                                    Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                }
+                                MouseArea {
+                                    id: tbFlushMa; anchors.fill: parent; hoverEnabled: true
+                                    onClicked: {
+                                        Config.topbarFlush = !Config.topbarFlush;
+                                        Config.saveAppSettings();
+                                    }
+                                    cursorShape: Qt.PointingHandCursor
+                                }
+                            }
+                        }
+                    }
+
+                    // ── Box 9: Bluetooth Auto-Hide ───────────────────────────
+                    Rectangle {
+                        id: boxBtHide
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: colBtHide.implicitHeight + root.s(32)
+                        radius: root.s(12)
+
+                        property bool isActive: root.highlightedBox === 9
+                        color: isActive ? root.blue : root.surface0
+                        border.color: isActive ? root.blue : root.surface1
+                        border.width: 1
+                        Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+
+                        MouseArea { anchors.fill: parent; onClicked: root.highlightedBox = 9; z: -1 }
+
+                        RowLayout {
+                            id: colBtHide
+                            anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right; anchors.margins: root.s(16)
+                            spacing: root.s(14)
+                            Item {
+                                Layout.preferredWidth: root.s(22); Layout.alignment: Qt.AlignVCenter
+                                Text {
+                                    anchors.centerIn: parent; text: "󰂲"
+                                    font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(18)
+                                    color: boxBtHide.isActive ? root.base : root.blue
+                                    Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                }
+                            }
+                            ColumnLayout {
+                                Layout.fillWidth: true; Layout.alignment: Qt.AlignVCenter; spacing: root.s(3)
+                                Text {
+                                    text: "Bluetooth Auto-Hide"; font.family: "Inter"; font.weight: Font.Medium; font.pixelSize: root.s(14)
+                                    color: boxBtHide.isActive ? root.base : root.text; Layout.fillWidth: true
+                                    Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                }
+                                Text {
+                                    text: "Hide the Bluetooth pill when Bluetooth is off"; font.family: "Inter"; font.pixelSize: root.s(11)
+                                    color: boxBtHide.isActive ? Qt.alpha(root.base, 0.75) : Qt.alpha(root.subtext0, 0.7); Layout.fillWidth: true
+                                    Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                }
+                            }
+                            Rectangle {
+                                Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
+                                Layout.preferredWidth: root.s(40); Layout.preferredHeight: root.s(22); radius: root.s(11)
+                                scale: btHideMa.containsMouse ? 1.05 : 1.0
+                                Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutBack } }
+                                color: Config.btAutoHide
+                                    ? (boxBtHide.isActive ? root.base : root.blue)
+                                    : Qt.alpha(root.surface2, boxBtHide.isActive ? 0.4 : 1.0)
+                                Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                Rectangle {
+                                    width: root.s(16); height: root.s(16); radius: root.s(8)
+                                    color: Config.btAutoHide
+                                        ? (boxBtHide.isActive ? root.blue : root.base)
+                                        : (boxBtHide.isActive ? root.blue : root.surface0)
+                                    y: root.s(3); x: Config.btAutoHide ? root.s(21) : root.s(3)
+                                    Behavior on x { NumberAnimation { duration: 250; easing.type: Easing.OutBack } }
+                                    Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                }
+                                MouseArea {
+                                    id: btHideMa; anchors.fill: parent; hoverEnabled: true
+                                    onClicked: {
+                                        Config.btAutoHide = !Config.btAutoHide;
+                                        Config.saveAppSettings();
+                                    }
+                                    cursorShape: Qt.PointingHandCursor
+                                }
+                            }
+                        }
+                    }
+
+                    // ── Box 10: System Dark Theme ────────────────────────────
+                    Rectangle {
+                        id: boxDarkMode
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: colDarkMode.implicitHeight + root.s(32)
+                        radius: root.s(12)
+
+                        property bool isActive: root.highlightedBox === 10
+                        color: isActive ? root.mauve : root.surface0
+                        border.color: isActive ? root.mauve : root.surface1
+                        border.width: 1
+                        Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+
+                        MouseArea { anchors.fill: parent; onClicked: root.highlightedBox = 10; z: -1 }
+
+                        RowLayout {
+                            id: colDarkMode
+                            anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right; anchors.margins: root.s(16)
+                            spacing: root.s(14)
+                            Item {
+                                Layout.preferredWidth: root.s(22); Layout.alignment: Qt.AlignVCenter
+                                Text {
+                                    anchors.centerIn: parent; text: "󰖔"
+                                    font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(18)
+                                    color: boxDarkMode.isActive ? root.base : root.mauve
+                                    Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                }
+                            }
+                            ColumnLayout {
+                                Layout.fillWidth: true; Layout.alignment: Qt.AlignVCenter; spacing: root.s(3)
+                                Text {
+                                    text: "System Dark Theme"; font.family: "Inter"; font.weight: Font.Medium; font.pixelSize: root.s(14)
+                                    color: boxDarkMode.isActive ? root.base : root.text; Layout.fillWidth: true
+                                    Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                }
+                                Text {
+                                    text: "GTK3/4, Qt, Portals & Bibata cursor active"; font.family: "Inter"; font.pixelSize: root.s(11)
+                                    color: boxDarkMode.isActive ? Qt.alpha(root.base, 0.75) : Qt.alpha(root.subtext0, 0.7); Layout.fillWidth: true
+                                    Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                }
+                            }
+                            Rectangle {
+                                Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
+                                Layout.preferredWidth: root.s(84); Layout.preferredHeight: root.s(28); radius: root.s(6)
+                                scale: darkBtnMa.pressed ? 0.95 : (darkBtnMa.containsMouse ? 1.05 : 1.0)
+                                Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutBack } }
+                                color: boxDarkMode.isActive ? root.base : Qt.alpha(root.mauve, 0.18)
+                                border.color: boxDarkMode.isActive ? root.base : root.mauve
+                                border.width: 1
+                                Text {
+                                    anchors.centerIn: parent; text: "Active ✓"
+                                    font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: root.s(11)
+                                    color: boxDarkMode.isActive ? root.mauve : root.mauve
+                                }
+                                MouseArea {
+                                    id: darkBtnMa; anchors.fill: parent; hoverEnabled: true
+                                    onClicked: {
+                                        Config.sh("gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'; hyprctl setcursor Bibata-Modern-Classic 24; notify-send 'Theme' 'System Dark Theme Active'");
+                                    }
+                                    cursorShape: Qt.PointingHandCursor
                                 }
                             }
                         }

@@ -82,6 +82,9 @@ Item {
     // Legacy Specific Properties (Bound to Settings.qml)
     // =========================================================================
     property real uiScale: 1.0
+    property real topbarScale: 0.75
+    property bool topbarFlush: true
+    property bool btAutoHide: true
     property bool openGuideAtStartup: true
     property bool topbarHelpIcon: true
     property int workspaceCount: 8
@@ -106,6 +109,9 @@ Item {
     function saveAppSettings() {
         let configObj = {
             "uiScale": config.uiScale,
+            "topbarScale": config.topbarScale,
+            "topbarFlush": config.topbarFlush,
+            "btAutoHide": config.btAutoHide,
             "openGuideAtStartup": config.openGuideAtStartup,
             "topbarHelpIcon": config.topbarHelpIcon,
             "wallpaperDir": config.wallpaperDir,
@@ -369,6 +375,9 @@ Item {
                         
                         // Map explicitly defined properties
                         if (config.rawSettings.uiScale !== undefined) config.uiScale = config.rawSettings.uiScale;
+                        if (config.rawSettings.topbarScale !== undefined) config.topbarScale = config.rawSettings.topbarScale;
+                        if (config.rawSettings.topbarFlush !== undefined) config.topbarFlush = config.rawSettings.topbarFlush;
+                        if (config.rawSettings.btAutoHide !== undefined) config.btAutoHide = config.rawSettings.btAutoHide;
                         if (config.rawSettings.openGuideAtStartup !== undefined) config.openGuideAtStartup = config.rawSettings.openGuideAtStartup;
                         if (config.rawSettings.topbarHelpIcon !== undefined) config.topbarHelpIcon = config.rawSettings.topbarHelpIcon;
                         if (config.rawSettings.wallpaperDir !== undefined) config.wallpaperDir = config.rawSettings.wallpaperDir;
