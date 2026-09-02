@@ -50,9 +50,10 @@ Variants {
             }
 
             property real baseScale: scaler.baseScale
+            property real barScale: 0.75
 
             function s(val) { 
-                return scaler.s(val); 
+                return Math.round(scaler.s(val) * barScale); 
             }
 
             property int barHeight: s(48)
