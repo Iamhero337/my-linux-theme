@@ -26,7 +26,7 @@ EXT_RES=$(echo "$MONITORS_JSON" | jq -r --arg n "$EXTERNAL" '.[] | select(.name=
 move_workspaces() {
     local target_mon="$1"
     for i in {1..10}; do
-        hyprctl dispatch moveworkspacetomonitor "$i" "$target_mon" >/dev/null 2>&1
+        hyprctl dispatch "hl.dsp.workspace.move({ workspace = $i, monitor = \"$target_mon\" })" >/dev/null 2>&1 || hyprctl dispatch moveworkspacetomonitor "$i" "$target_mon" >/dev/null 2>&1
     done
 }
 

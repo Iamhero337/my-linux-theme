@@ -12,7 +12,7 @@ if [ -n "$TARGET_MODE" ]; then
             notify-send -i "power-profile" "Power Profile" "Active profile: ${TARGET_MODE}" -u low
             ;;
         nvidia-settings)
-            hyprctl dispatch exec "nvidia-settings" 2>/dev/null || nvidia-settings &
+            hyprctl dispatch 'hl.dsp.exec_cmd("nvidia-settings")' 2>/dev/null || nvidia-settings &
             ;;
     esac
 fi

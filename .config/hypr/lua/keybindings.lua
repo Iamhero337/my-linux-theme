@@ -1,5 +1,5 @@
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
---  ◈ KEYBINDINGS (Ultra-Responsive & Standardized)
+--  ◈ KEYBINDINGS (Ultra-Responsive, Standardized & Native Lua Dispatchers)
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 local home = os.getenv("HOME")
@@ -19,14 +19,14 @@ hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- ── Window Navigation & Management ──
-hl.bind(mainMod .. " + Q", hl.dsp.window.close())
-hl.bind("ALT + F4",        hl.dsp.window.close())
+hl.bind(mainMod .. " + Q",         hl.dsp.window.close())
+hl.bind("ALT + F4",                hl.dsp.window.close())
 hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mainMod .. " + F", function() hl.dispatch("fullscreen", "0") end)
-hl.bind(mainMod .. " + G", function() hl.dispatch("togglegroup", "") end)
-hl.bind(mainMod .. " + Tab", function() hl.dispatch("changegroupactive", "f") end)
-hl.bind(mainMod .. " + SHIFT + Tab", function() hl.dispatch("changegroupactive", "b") end)
-hl.bind(mainMod .. " + S", function() hl.dispatch("layoutmsg", "togglesplit") end)
+hl.bind(mainMod .. " + F",         hl.dsp.window.fullscreen())
+hl.bind(mainMod .. " + G",         hl.dsp.group.toggle())
+hl.bind(mainMod .. " + Tab",       hl.dsp.group.next())
+hl.bind(mainMod .. " + SHIFT + Tab", hl.dsp.group.prev())
+hl.bind(mainMod .. " + S",         hl.dsp.layout("togglesplit"))
 
 -- Focus navigation (Arrow keys + Vim keys)
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
@@ -38,21 +38,21 @@ hl.bind(mainMod .. " + L",     hl.dsp.focus({ direction = "right" }))
 hl.bind(mainMod .. " + K",     hl.dsp.focus({ direction = "up" }))
 hl.bind(mainMod .. " + J",     hl.dsp.focus({ direction = "down" }))
 
--- Move active window
-hl.bind(mainMod .. " + SHIFT + left",  function() hl.dispatch("movewindow", "l") end)
-hl.bind(mainMod .. " + SHIFT + right", function() hl.dispatch("movewindow", "r") end)
-hl.bind(mainMod .. " + SHIFT + up",    function() hl.dispatch("movewindow", "u") end)
-hl.bind(mainMod .. " + SHIFT + down",  function() hl.dispatch("movewindow", "d") end)
-hl.bind(mainMod .. " + SHIFT + H",     function() hl.dispatch("movewindow", "l") end)
-hl.bind(mainMod .. " + SHIFT + L",     function() hl.dispatch("movewindow", "r") end)
-hl.bind(mainMod .. " + SHIFT + K",     function() hl.dispatch("movewindow", "u") end)
-hl.bind(mainMod .. " + SHIFT + J",     function() hl.dispatch("movewindow", "d") end)
+-- Move active window (Arrow keys + Vim keys)
+hl.bind(mainMod .. " + SHIFT + left",  hl.dsp.window.move({ direction = "left" }))
+hl.bind(mainMod .. " + SHIFT + right", hl.dsp.window.move({ direction = "right" }))
+hl.bind(mainMod .. " + SHIFT + up",    hl.dsp.window.move({ direction = "up" }))
+hl.bind(mainMod .. " + SHIFT + down",  hl.dsp.window.move({ direction = "down" }))
+hl.bind(mainMod .. " + SHIFT + H",     hl.dsp.window.move({ direction = "left" }))
+hl.bind(mainMod .. " + SHIFT + L",     hl.dsp.window.move({ direction = "right" }))
+hl.bind(mainMod .. " + SHIFT + K",     hl.dsp.window.move({ direction = "up" }))
+hl.bind(mainMod .. " + SHIFT + J",     hl.dsp.window.move({ direction = "down" }))
 
 -- Resize active window (Repeating)
-hl.bind(mainMod .. " + CTRL + left",  function() hl.dispatch("resizeactive", "-50 0") end, { repeating = true })
-hl.bind(mainMod .. " + CTRL + right", function() hl.dispatch("resizeactive", "50 0") end,  { repeating = true })
-hl.bind(mainMod .. " + CTRL + up",    function() hl.dispatch("resizeactive", "0 -50") end, { repeating = true })
-hl.bind(mainMod .. " + CTRL + down",  function() hl.dispatch("resizeactive", "0 50") end,  { repeating = true })
+hl.bind(mainMod .. " + CTRL + left",  hl.dsp.window.resize({ x = -50, y = 0, relative = true }), { repeating = true })
+hl.bind(mainMod .. " + CTRL + right", hl.dsp.window.resize({ x = 50, y = 0, relative = true }),  { repeating = true })
+hl.bind(mainMod .. " + CTRL + up",    hl.dsp.window.resize({ x = 0, y = -50, relative = true }), { repeating = true })
+hl.bind(mainMod .. " + CTRL + down",  hl.dsp.window.resize({ x = 0, y = 50, relative = true }),  { repeating = true })
 
 -- ── Applications & Launchers ──
 hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd("kitty"))
@@ -105,13 +105,13 @@ hl.bind("XF86AudioPrev",        hl.dsp.exec_cmd("playerctl previous"),          
 -- ── Workspaces (Instant Native Switching) ──
 for i = 1, 10 do
     local key = i % 10
-    hl.bind(mainMod .. " + " .. key, function() hl.dispatch("workspace", tostring(i)) end)
-    hl.bind(mainMod .. " + SHIFT + " .. key, function() hl.dispatch("movetoworkspace", tostring(i)) end)
+    hl.bind(mainMod .. " + " .. key,             hl.dsp.focus({ workspace = i }))
+    hl.bind(mainMod .. " + SHIFT + " .. key,     hl.dsp.window.move({ workspace = i }))
 end
 
 -- Scroll through workspaces
-hl.bind(mainMod .. " + mouse_down", function() hl.dispatch("workspace", "e+1") end)
-hl.bind(mainMod .. " + mouse_up",   function() hl.dispatch("workspace", "e-1") end)
+hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
+hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
 
 -- ── Shortcut Manager ──
 hl.bind(mainMod .. " + slash", hl.dsp.exec_cmd("python3 " .. home .. "/.local/share/hypr-shortcuts/shortcut_manager.py"))
