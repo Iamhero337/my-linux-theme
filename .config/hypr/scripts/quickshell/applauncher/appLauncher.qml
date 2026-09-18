@@ -11,6 +11,11 @@ Item {
     id: window
     focus: true
 
+    property real layoutWidth: width
+    property real layoutHeight: height
+    property var notifModel: null
+    property var liveNotifs: null
+
     // --- Responsive Scaling Logic ---
     Scaler {
         id: scaler

@@ -481,10 +481,14 @@ PanelWindow {
         masterWindow.targetH = t.h;
 
         let props = {};
-        props["notifModel"]   = masterWindow.notifModel;
-        props["liveNotifs"]   = masterWindow.liveNotifs;
-        props["layoutWidth"]  = t.w;
-        props["layoutHeight"] = t.h;
+        if (newWidget === "notifications") {
+            props["notifModel"]   = masterWindow.notifModel;
+            props["liveNotifs"]   = masterWindow.liveNotifs;
+        }
+        if (newWidget === "clipboard") {
+            props["layoutWidth"]  = t.w;
+            props["layoutHeight"] = t.h;
+        }
         if (newWidget === "wallpaper") props["widgetArg"] = arg;
 
         let cached = widgetCache[newWidget];
@@ -497,17 +501,21 @@ PanelWindow {
             if (arg !== "" && cached.activeMode !== undefined) cached.activeMode = arg;
 
             cached.visible = true;
-            if (immediate) {
-                widgetStack.replace(cached, {}, StackView.Immediate);
-            } else {
-                widgetStack.replace(cached, {});
-            }
+            try {
+                if (immediate) {
+                    widgetStack.replace(cached, {}, StackView.Immediate);
+                } else {
+                    widgetStack.replace(cached, {});
+                }
+            } catch(e) {}
         } else {
-            if (immediate) {
-                widgetStack.replace(t.comp, props, StackView.Immediate);
-            } else {
-                widgetStack.replace(t.comp, props);
-            }
+            try {
+                if (immediate) {
+                    widgetStack.replace(t.comp, props, StackView.Immediate);
+                } else {
+                    widgetStack.replace(t.comp, props);
+                }
+            } catch(e) {}
         }
 
         let currentItem = widgetStack.currentItem;
