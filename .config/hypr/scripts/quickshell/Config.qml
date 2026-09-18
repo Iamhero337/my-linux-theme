@@ -87,6 +87,8 @@ Item {
     property bool btAutoHide: true
     property bool openGuideAtStartup: true
     property bool topbarHelpIcon: true
+    property bool showWindowCount: true
+    property bool enableHotCornerOverview: true
     property int workspaceCount: 8
     property int initialWorkspaceCount: 8
     property string wallpaperDir: Quickshell.env("WALLPAPER_DIR") || (homeDir + "/Pictures/Wallpapers")
@@ -114,6 +116,8 @@ Item {
             "btAutoHide": config.btAutoHide,
             "openGuideAtStartup": config.openGuideAtStartup,
             "topbarHelpIcon": config.topbarHelpIcon,
+            "showWindowCount": config.showWindowCount,
+            "enableHotCornerOverview": config.enableHotCornerOverview,
             "wallpaperDir": config.wallpaperDir,
             "language": config.language,
             "kbOptions": config.kbOptions,
@@ -380,6 +384,8 @@ Item {
                         if (config.rawSettings.btAutoHide !== undefined) config.btAutoHide = config.rawSettings.btAutoHide;
                         if (config.rawSettings.openGuideAtStartup !== undefined) config.openGuideAtStartup = config.rawSettings.openGuideAtStartup;
                         if (config.rawSettings.topbarHelpIcon !== undefined) config.topbarHelpIcon = config.rawSettings.topbarHelpIcon;
+                        if (config.rawSettings.showWindowCount !== undefined) config.showWindowCount = config.rawSettings.showWindowCount;
+                        if (config.rawSettings.enableHotCornerOverview !== undefined) config.enableHotCornerOverview = config.rawSettings.enableHotCornerOverview;
                         if (config.rawSettings.wallpaperDir !== undefined) config.wallpaperDir = config.rawSettings.wallpaperDir;
                         if (config.rawSettings.language !== undefined && config.rawSettings.language !== "") config.language = config.rawSettings.language;
                         if (config.rawSettings.kbOptions !== undefined) config.kbOptions = config.rawSettings.kbOptions;

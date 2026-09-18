@@ -1279,6 +1279,122 @@ Item {
                         }
                     }
 
+                    // ── Box KDE Overview: Top-Left Corner & Windows Counter ───
+                    Rectangle {
+                        id: boxKdeOverview
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: kdeCol.implicitHeight + root.s(32)
+                        radius: root.s(12)
+
+                        property bool isActive: root.highlightedBox === 99
+                        color: isActive ? root.mauve : root.surface0
+                        border.color: isActive ? root.mauve : root.surface1
+                        border.width: 1
+                        Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+
+                        MouseArea { anchors.fill: parent; onClicked: root.highlightedBox = 99; z: -1 }
+
+                        ColumnLayout {
+                            id: kdeCol
+                            anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right; anchors.margins: root.s(16)
+                            spacing: root.s(16)
+
+                            // Row 1: Active Windows Counter in Topbar
+                            RowLayout {
+                                Layout.fillWidth: true; spacing: root.s(14)
+                                Item {
+                                    Layout.preferredWidth: root.s(22); Layout.alignment: Qt.AlignVCenter
+                                    Text {
+                                        anchors.centerIn: parent; text: "󰖲"
+                                        font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(18)
+                                        color: boxKdeOverview.isActive ? root.base : root.mauve
+                                        Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                    }
+                                }
+                                ColumnLayout {
+                                    Layout.fillWidth: true; Layout.alignment: Qt.AlignVCenter; spacing: root.s(3)
+                                    Text {
+                                        text: "Active Windows Counter"; font.family: "Inter"; font.weight: Font.Medium; font.pixelSize: root.s(14)
+                                        color: boxKdeOverview.isActive ? root.base : root.text; Layout.fillWidth: true
+                                        Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                    }
+                                    Text {
+                                        text: "Show active windows count across all virtual desktops in topbar"; font.family: "Inter"; font.pixelSize: root.s(11)
+                                        color: boxKdeOverview.isActive ? Qt.alpha(root.base, 0.75) : Qt.alpha(root.subtext0, 0.7); Layout.fillWidth: true
+                                        Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                    }
+                                }
+                                Rectangle {
+                                    Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
+                                    Layout.preferredWidth: root.s(40); Layout.preferredHeight: root.s(22); radius: root.s(11)
+                                    scale: toggleWinCountMa.containsMouse ? 1.05 : 1.0
+                                    Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutBack } }
+                                    color: Config.showWindowCount
+                                        ? (boxKdeOverview.isActive ? root.base : root.mauve)
+                                        : Qt.alpha(root.surface2, boxKdeOverview.isActive ? 0.4 : 1.0)
+                                    Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                    Rectangle {
+                                        width: root.s(16); height: root.s(16); radius: root.s(8)
+                                        color: Config.showWindowCount
+                                            ? (boxKdeOverview.isActive ? root.mauve : root.base)
+                                            : (boxKdeOverview.isActive ? root.mauve : root.surface0)
+                                        y: root.s(3); x: Config.showWindowCount ? root.s(21) : root.s(3)
+                                        Behavior on x { NumberAnimation { duration: 250; easing.type: Easing.OutBack } }
+                                        Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                    }
+                                    MouseArea { id: toggleWinCountMa; anchors.fill: parent; hoverEnabled: true; onClicked: Config.showWindowCount = !Config.showWindowCount; cursorShape: Qt.PointingHandCursor }
+                                }
+                            }
+
+                            // Row 2: Top-Left Hot Corner Overview Trigger
+                            RowLayout {
+                                Layout.fillWidth: true; spacing: root.s(14)
+                                Item {
+                                    Layout.preferredWidth: root.s(22); Layout.alignment: Qt.AlignVCenter
+                                    Text {
+                                        anchors.centerIn: parent; text: "󰹑"
+                                        font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(18)
+                                        color: boxKdeOverview.isActive ? root.base : root.mauve
+                                        Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                    }
+                                }
+                                ColumnLayout {
+                                    Layout.fillWidth: true; Layout.alignment: Qt.AlignVCenter; spacing: root.s(3)
+                                    Text {
+                                        text: "KDE Top-Left Hot Corner"; font.family: "Inter"; font.weight: Font.Medium; font.pixelSize: root.s(14)
+                                        color: boxKdeOverview.isActive ? root.base : root.text; Layout.fillWidth: true
+                                        Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                    }
+                                    Text {
+                                        text: "Push mouse to top-left corner to trigger all-desktops overview"; font.family: "Inter"; font.pixelSize: root.s(11)
+                                        color: boxKdeOverview.isActive ? Qt.alpha(root.base, 0.75) : Qt.alpha(root.subtext0, 0.7); Layout.fillWidth: true
+                                        Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                    }
+                                }
+                                Rectangle {
+                                    Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
+                                    Layout.preferredWidth: root.s(40); Layout.preferredHeight: root.s(22); radius: root.s(11)
+                                    scale: toggleHotCornerMa.containsMouse ? 1.05 : 1.0
+                                    Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutBack } }
+                                    color: Config.enableHotCornerOverview
+                                        ? (boxKdeOverview.isActive ? root.base : root.mauve)
+                                        : Qt.alpha(root.surface2, boxKdeOverview.isActive ? 0.4 : 1.0)
+                                    Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                    Rectangle {
+                                        width: root.s(16); height: root.s(16); radius: root.s(8)
+                                        color: Config.enableHotCornerOverview
+                                            ? (boxKdeOverview.isActive ? root.mauve : root.base)
+                                            : (boxKdeOverview.isActive ? root.mauve : root.surface0)
+                                        y: root.s(3); x: Config.enableHotCornerOverview ? root.s(21) : root.s(3)
+                                        Behavior on x { NumberAnimation { duration: 250; easing.type: Easing.OutBack } }
+                                        Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                    }
+                                    MouseArea { id: toggleHotCornerMa; anchors.fill: parent; hoverEnabled: true; onClicked: Config.enableHotCornerOverview = !Config.enableHotCornerOverview; cursorShape: Qt.PointingHandCursor }
+                                }
+                            }
+                        }
+                    }
+
                     // ── Box 2: UI Scale ──────────────────────────────────────
                     Rectangle {
                         id: box2

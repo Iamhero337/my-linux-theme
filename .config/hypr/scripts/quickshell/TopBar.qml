@@ -57,11 +57,28 @@ Variants {
             }
 
             property int barHeight: s(48)
+            property int totalActiveWindows: 0
 
             height: barHeight
             margins { top: Config.topbarFlush ? 0 : s(8); bottom: 0; left: s(4); right: s(4) }
             exclusiveZone: barHeight 
             color: "transparent"
+
+            // KDE Top-Left Screen Edge Hot Corner (Overview)
+            MouseArea {
+                id: topLeftHotCorner
+                anchors.top: parent.top
+                anchors.left: parent.left
+                width: barWindow.s(8)
+                height: barWindow.s(8)
+                z: 99999
+                hoverEnabled: true
+                onEntered: {
+                    if (Config.enableHotCornerOverview !== false) {
+                        Quickshell.execDetached(["rofi", "-show", "window"]);
+                    }
+                }
+            }
 
             MatugenColors {
                 id: mocha
@@ -311,9 +328,16 @@ Variants {
                                 }
                                 
                                 let newActive = -1;
+                                let winCount = 0;
 
                                 for (let i = 0; i < newData.length; i++) {
                                     if (newData[i].state === "active") newActive = i;
+
+                                    if (newData[i].windows !== undefined) {
+                                        winCount += Number(newData[i].windows);
+                                    } else if (newData[i].state === "occupied" || newData[i].state === "active") {
+                                        winCount += 1;
+                                    }
 
                                     if (workspacesModel.get(i).wsState !== newData[i].state) {
                                         workspacesModel.setProperty(i, "wsState", newData[i].state);
@@ -322,6 +346,8 @@ Variants {
                                         workspacesModel.setProperty(i, "wsId", newData[i].id.toString());
                                     }
                                 }
+
+                                barWindow.totalActiveWindows = winCount;
 
                                 if (newActive !== -1 && workspacesModel.activeIndex !== newActive) {
                                     workspacesModel.activeIndex = newActive;
@@ -618,6 +644,59 @@ Variants {
                         
                         property int pillHeight: barWindow.s(34)
 
+                        // KDE Overview / Active Windows Counter across all virtual desktops
+                        Rectangle {
+                            id: kdeOverviewBtn
+                            visible: Config.showWindowCount
+                            property bool isHovered: kdeOverviewMa.containsMouse
+                            color: isHovered ? Qt.rgba(mocha.mauve.r, mocha.mauve.g, mocha.mauve.b, 0.22) : (barWindow.totalActiveWindows > 0 ? Qt.rgba(mocha.surface1.r, mocha.surface1.g, mocha.surface1.b, 0.5) : "transparent")
+                            radius: barWindow.s(10)
+                            height: parent.pillHeight
+                            width: barWindow.s(48)
+                            border.width: 1
+                            border.color: isHovered ? Qt.rgba(mocha.mauve.r, mocha.mauve.g, mocha.mauve.b, 0.5) : (barWindow.totalActiveWindows > 0 ? Qt.rgba(mocha.text.r, mocha.text.g, mocha.text.b, 0.08) : "transparent")
+                            scale: isHovered ? 1.05 : 1.0
+                            Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack } }
+                            Behavior on color { ColorAnimation { duration: 200 } }
+                            Behavior on border.color { ColorAnimation { duration: 200 } }
+
+                            ToolTip.visible: isHovered
+                            ToolTip.delay: 400
+                            ToolTip.text: "Active Windows: " + barWindow.totalActiveWindows + " across all virtual desktops (Click to switch)"
+
+                            Row {
+                                anchors.centerIn: parent
+                                spacing: barWindow.s(4)
+
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: "󰖲"
+                                    font.family: "Iosevka Nerd Font"
+                                    font.pixelSize: barWindow.s(17)
+                                    color: kdeOverviewBtn.isHovered ? mocha.mauve : (barWindow.totalActiveWindows > 0 ? mocha.mauve : mocha.overlay0)
+                                    Behavior on color { ColorAnimation { duration: 200 } }
+                                }
+
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: barWindow.totalActiveWindows.toString()
+                                    font.family: "JetBrains Mono"
+                                    font.pixelSize: barWindow.s(13)
+                                    font.weight: Font.Bold
+                                    color: kdeOverviewBtn.isHovered ? mocha.text : (barWindow.totalActiveWindows > 0 ? mocha.text : mocha.overlay0)
+                                    Behavior on color { ColorAnimation { duration: 200 } }
+                                }
+                            }
+
+                            MouseArea {
+                                id: kdeOverviewMa
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: Quickshell.execDetached(["rofi", "-show", "window"])
+                            }
+                        }
+
                         Rectangle {
                             property bool isHovered: helpMouse.containsMouse
                             color: isHovered ? Qt.rgba(mocha.surface1.r, mocha.surface1.g, mocha.surface1.b, 0.6) : "transparent"
@@ -900,7 +979,25 @@ Variants {
                                     cursorShape: Qt.PointingHandCursor
                                     anchors.fill: parent
                                     onClicked: Quickshell.execDetached(["bash", "-c", "~/.config/hypr/scripts/qs_manager.sh " + (wsName && wsName.length > 0 ? wsName : (index + 1))])
+                                    onWheel: (wheel) => {
+                                        if (wheel.angleDelta.y < 0) {
+                                            Quickshell.execDetached(["hyprctl", "dispatch", "hl.dsp.focus({ workspace = \"e+1\" })"]);
+                                        } else if (wheel.angleDelta.y > 0) {
+                                            Quickshell.execDetached(["hyprctl", "dispatch", "hl.dsp.focus({ workspace = \"e-1\" })"]);
+                                        }
+                                    }
                                 }
+                            }
+                        }
+                    }
+
+                    WheelHandler {
+                        id: wsBoxWheel
+                        onWheel: (event) => {
+                            if (event.angleDelta.y < 0) {
+                                Quickshell.execDetached(["hyprctl", "dispatch", "hl.dsp.focus({ workspace = \"e+1\" })"]);
+                            } else if (event.angleDelta.y > 0) {
+                                Quickshell.execDetached(["hyprctl", "dispatch", "hl.dsp.focus({ workspace = \"e-1\" })"]);
                             }
                         }
                     }

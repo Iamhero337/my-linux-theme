@@ -71,12 +71,16 @@ print_workspaces() {
             {
                 id: $i,
                 state: $state,
+                windows: (if $s[$i|tostring] != null then ($s[$i|tostring].windows // 0) else 0 end),
                 tooltip: $win
             }
         )
     ' > "$QS_RUN_WORKSPACES/workspaces.tmp"
     
     mv "$QS_RUN_WORKSPACES/workspaces.tmp" "$QS_RUN_WORKSPACES/workspaces.json"
+
+    echo "$spaces" | jq '[.[].windows] | add // 0' > "$QS_RUN_WORKSPACES/total_windows.tmp" 2>/dev/null
+    mv "$QS_RUN_WORKSPACES/total_windows.tmp" "$QS_RUN_WORKSPACES/total_windows" 2>/dev/null
 }
 
 # Print initial state
