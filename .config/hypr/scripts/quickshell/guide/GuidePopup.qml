@@ -127,7 +127,7 @@ Item {
     property real colorBlend: 0.0
     SequentialAnimation on colorBlend {
         loops: Animation.Infinite
-        running: true
+        running: root.visible
         NumberAnimation { to: 1.0; duration: 15000; easing.type: Easing.InOutSine }
         NumberAnimation { to: 0.0; duration: 15000; easing.type: Easing.InOutSine }
     }
@@ -336,7 +336,7 @@ Item {
                 to: Math.PI * 2
                 duration: 20000
                 loops: Animation.Infinite
-                running: true 
+                running: root.visible 
             }
             
             // Orb 1
@@ -776,7 +776,7 @@ Item {
                                         to: 360
                                         duration: 15000
                                         loops: Animation.Infinite
-                                        running: true 
+                                        running: root.visible 
                                     }
                                 }
                                 

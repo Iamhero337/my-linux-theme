@@ -122,7 +122,7 @@ Item {
         }
     }
 
-    Timer { interval: 100; running: true; repeat: true; onTriggered: modeReader.running = true }
+    Timer { interval: 500; running: window.visible; repeat: true; onTriggered: modeReader.running = true }
 
     Component.onCompleted: {
         window.powerAnimAllowed = false;

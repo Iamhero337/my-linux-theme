@@ -183,7 +183,7 @@ if [ -f "$CACHE_DIR/rec_pid" ]; then
     # 4. SEND FINAL NOTIFICATION
     if [ -f "$FINAL_FILE" ]; then
         (
-            ACTION=$(notify-send -a "Screen Recorder" -i "$FINAL_FILE" -A "default=Open Folder" "⏺ Recording Saved" "File: $(basename "$FINAL_FILE")\nFolder: $RECORD_DIR")
+            ACTION=$(notify-send -t 8000 -a "Screen Recorder" -i "$FINAL_FILE" -A "default=Open Folder" "⏺ Recording Saved" "File: $(basename "$FINAL_FILE")\nFolder: $RECORD_DIR")
             if [ "$ACTION" = "default" ]; then
                 if command -v dolphin &> /dev/null; then
                     dolphin "$RECORD_DIR"
@@ -320,7 +320,7 @@ if [ "$FULL_MODE" = true ] || [ -n "$GEOMETRY" ]; then
 
     if [ -s "$FILENAME" ]; then
         (
-            ACTION=$(notify-send -a "Screenshot" -i "$FILENAME" -A "default=Open Folder" "Screenshot Saved" "File: Screenshot_$time.png\nFolder: $SAVE_DIR")
+            ACTION=$(notify-send -t 8000 -a "Screenshot" -i "$FILENAME" -A "default=Open Folder" "Screenshot Saved" "File: Screenshot_$time.png\nFolder: $SAVE_DIR")
             if [ "$ACTION" = "default" ]; then
                 if command -v dolphin &> /dev/null; then
                     dolphin "$SAVE_DIR"

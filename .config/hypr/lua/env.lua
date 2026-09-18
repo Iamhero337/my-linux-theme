@@ -3,12 +3,10 @@
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 local env_vars = {
-    -- NVIDIA & Hardware Acceleration
-    LIBVA_DRIVER_NAME = "nvidia",
+    -- Hardware Acceleration (Intel Raptor Lake UHD iGPU for Display & Video Decode)
+    LIBVA_DRIVER_NAME = "iHD",
     XDG_SESSION_TYPE = "wayland",
-    GBM_BACKEND = "nvidia-drm",
-    __GLX_VENDOR_LIBRARY_NAME = "nvidia",
-    NVD_BACKEND = "direct",
+    AQ_DRM_DEVICES = "/dev/dri/card2:/dev/dri/card1",
     __GL_VRR_ALLOWED = "1",
     ELECTRON_OZONE_PLATFORM_HINT = "auto",
     MOZ_ENABLE_WAYLAND = "1",

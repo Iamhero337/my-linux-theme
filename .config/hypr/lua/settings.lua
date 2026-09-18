@@ -13,6 +13,7 @@ hl.config({
         resize_on_border = true,
         extend_border_grab_area = 30,
         hover_icon_on_border = true,
+        allow_tearing = true,
         col = {
             active_border = colors.active_border,
             inactive_border = colors.inactive_border,
@@ -40,10 +41,13 @@ hl.config({
     input = {
         kb_layout = "us, ru",
         kb_options = "grp:alt_shift_toggle",
+        repeat_rate = 50,
+        repeat_delay = 250,
         accel_profile = "flat",
         follow_mouse = 1,
         touchpad = {
             natural_scroll = true,
+            tap_to_click = true,
             disable_while_typing = true,
         },
     },
@@ -63,8 +67,8 @@ hl.config({
     },
 
     cursor = {
-        no_hardware_cursors = true,
-        enable_hyprcursor = false,
+        no_hardware_cursors = false,
+        enable_hyprcursor = true,
         sync_gsettings_theme = true,
     },
 
