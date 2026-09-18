@@ -151,7 +151,9 @@ Item {
     }
 
     function launchApp(execStr) {
-        Quickshell.execDetached(["hyprctl", "dispatch", "exec", "--", execStr]);
+        if (!execStr) return;
+        let cleanCmd = execStr.replace(/%[uUfFick]/g, "").trim();
+        Quickshell.execDetached(["bash", "-c", cleanCmd + " >/dev/null 2>&1 &"]);
         Quickshell.execDetached(["bash", Quickshell.env("HOME") + "/.config/hypr/scripts/qs_manager.sh", "close"]);
     }
 

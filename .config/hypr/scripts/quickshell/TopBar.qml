@@ -64,22 +64,6 @@ Variants {
             exclusiveZone: barHeight 
             color: "transparent"
 
-            // KDE Top-Left Screen Edge Hot Corner (Overview)
-            MouseArea {
-                id: topLeftHotCorner
-                anchors.top: parent.top
-                anchors.left: parent.left
-                width: barWindow.s(8)
-                height: barWindow.s(8)
-                z: 99999
-                hoverEnabled: true
-                onEntered: {
-                    if (Config.enableHotCornerOverview !== false) {
-                        Quickshell.execDetached(["rofi", "-show", "window"]);
-                    }
-                }
-            }
-
             MatugenColors {
                 id: mocha
             }
@@ -643,59 +627,6 @@ Variants {
                         spacing: barWindow.s(4)
                         
                         property int pillHeight: barWindow.s(34)
-
-                        // KDE Overview / Active Windows Counter across all virtual desktops
-                        Rectangle {
-                            id: kdeOverviewBtn
-                            visible: Config.showWindowCount
-                            property bool isHovered: kdeOverviewMa.containsMouse
-                            color: isHovered ? Qt.rgba(mocha.mauve.r, mocha.mauve.g, mocha.mauve.b, 0.22) : (barWindow.totalActiveWindows > 0 ? Qt.rgba(mocha.surface1.r, mocha.surface1.g, mocha.surface1.b, 0.5) : "transparent")
-                            radius: barWindow.s(10)
-                            height: parent.pillHeight
-                            width: barWindow.s(48)
-                            border.width: 1
-                            border.color: isHovered ? Qt.rgba(mocha.mauve.r, mocha.mauve.g, mocha.mauve.b, 0.5) : (barWindow.totalActiveWindows > 0 ? Qt.rgba(mocha.text.r, mocha.text.g, mocha.text.b, 0.08) : "transparent")
-                            scale: isHovered ? 1.05 : 1.0
-                            Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack } }
-                            Behavior on color { ColorAnimation { duration: 200 } }
-                            Behavior on border.color { ColorAnimation { duration: 200 } }
-
-                            ToolTip.visible: isHovered
-                            ToolTip.delay: 400
-                            ToolTip.text: "Active Windows: " + barWindow.totalActiveWindows + " across all virtual desktops (Click to switch)"
-
-                            Row {
-                                anchors.centerIn: parent
-                                spacing: barWindow.s(4)
-
-                                Text {
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    text: "󰖲"
-                                    font.family: "Iosevka Nerd Font"
-                                    font.pixelSize: barWindow.s(17)
-                                    color: kdeOverviewBtn.isHovered ? mocha.mauve : (barWindow.totalActiveWindows > 0 ? mocha.mauve : mocha.overlay0)
-                                    Behavior on color { ColorAnimation { duration: 200 } }
-                                }
-
-                                Text {
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    text: barWindow.totalActiveWindows.toString()
-                                    font.family: "JetBrains Mono"
-                                    font.pixelSize: barWindow.s(13)
-                                    font.weight: Font.Bold
-                                    color: kdeOverviewBtn.isHovered ? mocha.text : (barWindow.totalActiveWindows > 0 ? mocha.text : mocha.overlay0)
-                                    Behavior on color { ColorAnimation { duration: 200 } }
-                                }
-                            }
-
-                            MouseArea {
-                                id: kdeOverviewMa
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: Quickshell.execDetached(["rofi", "-show", "window"])
-                            }
-                        }
 
                         Rectangle {
                             property bool isHovered: helpMouse.containsMouse
