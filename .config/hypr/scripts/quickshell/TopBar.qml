@@ -897,8 +897,9 @@ Variants {
                                 MouseArea {
                                     id: wsPillMouse
                                     hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
                                     anchors.fill: parent
-                                    onClicked: Quickshell.execDetached(["bash", "-c", "~/.config/hypr/scripts/qs_manager.sh " + wsName])
+                                    onClicked: Quickshell.execDetached(["bash", "-c", "~/.config/hypr/scripts/qs_manager.sh " + (wsName && wsName.length > 0 ? wsName : (index + 1))])
                                 }
                             }
                         }
