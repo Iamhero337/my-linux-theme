@@ -53,6 +53,15 @@ def get_data():
         except:
             pass
 
+    def is_available(node, is_default=False):
+        if is_default:
+            return True
+        ports = node.get("ports", [])
+        if not ports:
+            return True
+        # If all ports explicitly report 'not available', the physical connector is unplugged
+        return not all(p.get("availability") == "not available" for p in ports)
+
     def format_node(n, is_default=False, is_app=False):
         vol = 0
         if "volume" in n and isinstance(n["volume"], dict):
@@ -67,15 +76,40 @@ def get_data():
             display_name = get_valid_string(props.get("application.name"), props.get("application.process.binary"), "Unknown App")
             sub_desc = get_valid_string(props.get("media.name"), props.get("window.title"), props.get("media.role"), "Audio Stream")
         else:
-            display_name = get_valid_string(props.get("device.description"), n.get("name"), "Unknown Device")
-            sub_desc = get_valid_string(n.get("name"), "Unknown")
+            node_name = n.get("name", "")
+            is_bt = props.get("device.bus") == "bluetooth" or "bluez" in node_name.lower()
+
+            if is_bt:
+                display_name = get_valid_string(
+                    props.get("device.description"),
+                    props.get("node.description"),
+                    props.get("node.nick"),
+                    n.get("description"),
+                    "Bluetooth Device"
+                )
+                sub_desc = get_valid_string(props.get("device.profile.description"), "Bluetooth Audio")
+            else:
+                dev_desc = props.get("device.description", "")
+                prof_desc = props.get("device.profile.description", "")
+                node_nick = props.get("node.nick", "")
+
+                if dev_desc.lower() in ["sof-hda-dsp", "built-in audio", "audio adapter", "alsa audio"]:
+                    display_name = get_valid_string(prof_desc, node_nick, n.get("description"), "Built-in Audio")
+                    sub_desc = "Built-in Audio"
+                elif prof_desc and dev_desc and prof_desc.lower() not in dev_desc.lower():
+                    display_name = f"{dev_desc} ({prof_desc})"
+                    sub_desc = dev_desc
+                else:
+                    display_name = get_valid_string(dev_desc, prof_desc, node_nick, n.get("description"), "Audio Device")
+                    sub_desc = "Audio Device"
 
         icon = get_valid_string(props.get("application.icon_name"), props.get("device.icon_name"), "audio-card")
         
         return {
             "id": str(n.get("index")),
-            "name": sub_desc,
+            "name": n.get("name", ""),
             "description": display_name,
+            "sub_desc": sub_desc,
             "volume": vol,
             "mute": bool(n.get("mute", False)),
             "is_default": bool(is_default),
@@ -88,16 +122,27 @@ def get_data():
         if props.get("application.id") != "org.PulseAudio.pavucontrol":
             apps.append(format_node(s, is_app=True))
 
-    # Filter out monitor sources so outputs don't show up in the inputs tab
+    # Filter out unavailable sinks (e.g. unplugged HDMI 1, 2, 3)
+    real_outputs = []
+    for s in sinks:
+        is_def = (s.get("name") == default_sink)
+        if not is_available(s, is_def):
+            continue
+        real_outputs.append(format_node(s, is_def))
+
+    # Filter out monitor sources and unavailable inputs (e.g. unplugged 3.5mm headset mic)
     real_inputs = []
     for s in sources:
         props = s.get("properties", {})
         if props.get("device.class") == "monitor" or str(s.get("name", "")).endswith(".monitor"):
             continue
-        real_inputs.append(format_node(s, s.get("name") == default_source))
+        is_def = (s.get("name") == default_source)
+        if not is_available(s, is_def):
+            continue
+        real_inputs.append(format_node(s, is_def))
 
     out = {
-        "outputs": [format_node(s, s.get("name") == default_sink) for s in sinks],
+        "outputs": real_outputs,
         "inputs": real_inputs,
         "apps": apps
     }

@@ -128,7 +128,7 @@ Item {
             if (d.is_default) {
                 window.activeId = d.id;
                 window.activeName = d.description;
-                window.activeDesc = d.name;
+                window.activeDesc = d.sub_desc || d.name;
                 window.activeIcon = d.icon;
                 if (!window.draggingMaster) {
                     window.activeVol = d.volume;
@@ -144,7 +144,7 @@ Item {
             let d = targetModel.get(0);
             window.activeId = d.id;
             window.activeName = d.description;
-            window.activeDesc = d.name;
+            window.activeDesc = d.sub_desc || d.name;
             window.activeIcon = d.icon;
             if (!window.draggingMaster) {
                 window.activeVol = d.volume;
@@ -171,7 +171,7 @@ Item {
             }
             
             let obj = {
-                id: d.id, name: d.name, description: d.description,
+                id: d.id, name: d.name, description: d.description, sub_desc: d.sub_desc || "",
                 volume: d.volume, mute: d.mute, is_default: d.is_default, icon: d.icon
             };
 
@@ -774,7 +774,7 @@ Item {
                                             Layout.fillWidth: true; elide: Text.ElideRight
                                             font.family: "JetBrains Mono"; font.pixelSize: window.s(11)
                                             color: isActiveNode ? Qt.darker(window.crust, 1.5) : window.subtext0
-                                            text: isActiveNode ? "Active Default" : model.name
+                                            text: isActiveNode ? "Active Default" : (model.sub_desc || model.name)
                                         }
                                     }
                                 }

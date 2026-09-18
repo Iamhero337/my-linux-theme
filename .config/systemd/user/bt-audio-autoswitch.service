@@ -1,0 +1,13 @@
+[Unit]
+Description=Bluetooth Audio Auto-Prioritizer for PipeWire
+After=wireplumber.service pipewire.service
+Wants=wireplumber.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /home/hero/.config/hypr/scripts/bt_audio_autoswitch.py
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=default.target
