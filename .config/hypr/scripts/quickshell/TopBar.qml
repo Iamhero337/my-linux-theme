@@ -263,15 +263,48 @@ Variants {
             property string displayTime: ""
             property string displayArtUrl: ""
 
-            onMusicDataChanged: {
-                if (musicData && musicData.status !== "Stopped" && musicData.title !== "") {
-                    displayTitle = musicData.title;
-                    displayTime = musicData.timeStr;
-                    displayArtUrl = musicData.artUrl;
+            property bool isMediaPlaying: barWindow.musicData && barWindow.musicData.status === "Playing" && barWindow.musicData.title !== ""
+            property bool isMediaPausedGrace: false
+            property bool prevWasPlaying: false
+
+            Timer {
+                id: pauseGraceTimer
+                interval: 20000 // 20-second grace period when user pauses before collapsing
+                repeat: false
+                onTriggered: {
+                    barWindow.isMediaPausedGrace = false;
                 }
             }
 
-            property bool isMediaActive: barWindow.musicData.status !== "Stopped" && barWindow.musicData.title !== ""
+            onMusicDataChanged: {
+                if (musicData && musicData.title !== "") {
+                    displayTitle = musicData.title;
+                    displayTime = musicData.timeStr;
+                    displayArtUrl = musicData.artUrl;
+
+                    if (musicData.status === "Playing") {
+                        pauseGraceTimer.stop();
+                        isMediaPausedGrace = false;
+                        prevWasPlaying = true;
+                    } else if (musicData.status === "Paused") {
+                        if (prevWasPlaying) {
+                            isMediaPausedGrace = true;
+                            pauseGraceTimer.restart();
+                            prevWasPlaying = false;
+                        }
+                    } else {
+                        pauseGraceTimer.stop();
+                        isMediaPausedGrace = false;
+                        prevWasPlaying = false;
+                    }
+                } else {
+                    pauseGraceTimer.stop();
+                    isMediaPausedGrace = false;
+                    prevWasPlaying = false;
+                }
+            }
+
+            property bool isMediaActive: isMediaPlaying || isMediaPausedGrace
             property bool isWifiOn: barWindow.wifiStatus.toLowerCase() === "enabled" || barWindow.wifiStatus.toLowerCase() === "on"
             property bool isBtOn: barWindow.btStatus.toLowerCase() === "enabled" || barWindow.btStatus.toLowerCase() === "on"
             property bool showEthernet: barWindow.ethStatus === "Connected" || (barWindow.isDesktop && !barWindow.isWifiOn)

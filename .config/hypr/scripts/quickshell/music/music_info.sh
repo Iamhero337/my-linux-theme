@@ -13,7 +13,19 @@ mkdir -p "$TMP_DIR"
 PLACEHOLDER="$TMP_DIR/placeholder_blank.png"
 
 # Prevent cold-boot D-Bus hangs from keeping the script alive
-PT="timeout 1.5 playerctl"
+# Prioritize any player that is actively Playing over idle/paused players
+PLAYING_PLAYER=$(playerctl -l 2>/dev/null | while read -r p; do
+    if [ "$(playerctl -p "$p" status 2>/dev/null)" = "Playing" ]; then
+        echo "$p"
+        break
+    fi
+done)
+
+if [ -n "$PLAYING_PLAYER" ]; then
+    PT="timeout 1.5 playerctl -p $PLAYING_PLAYER"
+else
+    PT="timeout 1.5 playerctl"
+fi
 
 # --- 1. ENSURE PLACEHOLDER EXISTS ---
 if [ ! -f "$PLACEHOLDER" ]; then
