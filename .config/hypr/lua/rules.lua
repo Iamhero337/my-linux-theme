@@ -76,3 +76,49 @@ hl.window_rule({
     center = true,
     size = "950 680",
 })
+
+-- File Pickers & Portal Dialogs
+hl.window_rule({
+    name = "portal-gtk-float",
+    match = { class = "xdg-desktop-portal-gtk" },
+    float = true,
+    center = true,
+    size = "950 650",
+    dim_around = true,
+})
+hl.window_rule({
+    name = "portal-kde-float",
+    match = { class = "xdg-desktop-portal-kde" },
+    float = true,
+    center = true,
+    size = "950 650",
+    dim_around = true,
+})
+hl.window_rule({
+    name = "dialog-open-file",
+    match = { title = ".*Open File.*" },
+    float = true,
+    center = true,
+    size = "950 650",
+})
+hl.window_rule({
+    name = "dialog-save-file",
+    match = { title = ".*Save File.*" },
+    float = true,
+    center = true,
+    size = "950 650",
+})
+hl.window_rule({
+    name = "dialog-choose-file",
+    match = { title = ".*Choose File.*" },
+    float = true,
+    center = true,
+    size = "950 650",
+})
+hl.window_rule({
+    name = "dialog-select-file",
+    match = { title = ".*Select.*" },
+    float = true,
+    center = true,
+    size = "950 650",
+})
