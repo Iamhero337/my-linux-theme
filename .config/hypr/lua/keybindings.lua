@@ -62,7 +62,7 @@ hl.bind(mainMod .. " + E",      hl.dsp.exec_cmd("dolphin"))
 hl.bind(mainMod .. " + B",      hl.dsp.exec_cmd("vivaldi"))
 hl.bind(mainMod .. " + T",      hl.dsp.exec_cmd("telegram-desktop || Telegram"))
 hl.bind(mainMod .. " + W",      qs_toggle("wallpaper"))
-hl.bind(mainMod .. " + V",      qs_toggle("clipboard"))
+hl.bind(mainMod .. " + V",      hl.dsp.exec_cmd("bash " .. home .. "/.config/hypr/scripts/toggle_kde_clipboard.sh"))
 
 -- ── Quickshell Popups & Overlays ──
 hl.bind(mainMod .. " + SHIFT + S", qs_toggle("settings"))

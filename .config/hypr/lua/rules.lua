@@ -77,6 +77,16 @@ hl.window_rule({
     size = "950 680",
 })
 
+-- KDE Clipboard (plasmawindowed)
+hl.window_rule({
+    name = "plasmawindowed-clipboard-float",
+    match = { class = "org.kde.plasmawindowed" },
+    float = true,
+    center = true,
+    size = "600 650",
+    dim_around = true,
+})
+
 -- File Pickers & Portal Dialogs
 hl.window_rule({
     name = "portal-gtk-float",
