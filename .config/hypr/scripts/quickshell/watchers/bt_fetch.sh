@@ -18,6 +18,7 @@ toggle_bt() {
         LC_ALL=C timeout 0.5 bluetoothctl power off 2>/dev/null
         notify-send -u low -i bluetooth-disabled "Bluetooth" "Disabled"
     else
+        rfkill unblock bluetooth 2>/dev/null || true
         LC_ALL=C timeout 0.5 bluetoothctl power on 2>/dev/null
         notify-send -u low -i bluetooth-active "Bluetooth" "Enabled"
     fi

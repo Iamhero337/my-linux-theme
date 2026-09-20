@@ -26,6 +26,7 @@ hl.on("hyprland.start", function()
         "xsettingsd &",
         "python3 " .. home .. "/.config/hypr/scripts/gesture_daemon.py &",
         "sleep 1 && hyprctl dismissnotify",
+        "bluetoothctl power off",
     }
 
     for _, cmd in ipairs(autostart_list) do
