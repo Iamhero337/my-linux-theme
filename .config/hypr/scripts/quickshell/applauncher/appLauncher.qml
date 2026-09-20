@@ -184,7 +184,7 @@ Item {
     // --- BACKGROUND ORBIT ANIMATION ---
     property real globalOrbitAngle: 0
     NumberAnimation on globalOrbitAngle {
-        from: 0; to: Math.PI * 2; duration: 90000; loops: Animation.Infinite; running: true
+        from: 0; to: Math.PI * 2; duration: 90000; loops: Animation.Infinite; running: window.visible
     }
 
     // --- MAIN INTRO ANIMATION ---

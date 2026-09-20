@@ -224,14 +224,21 @@ Item {
             }
         }
     }
+    onVisibleChanged: {
+        if (visible) {
+            sysPoller.running = false;
+            sysPoller.running = true;
+        }
+    }
+
     Timer {
-        interval: 1500; running: true; repeat: true; triggeredOnStart: true;
+        interval: 1500; running: window.visible; repeat: true; triggeredOnStart: true;
         onTriggered: sysPoller.running = true
     }
 
     property real globalOrbitAngle: 0
     NumberAnimation on globalOrbitAngle {
-        from: 0; to: Math.PI * 2; duration: 90000; loops: Animation.Infinite; running: true
+        from: 0; to: Math.PI * 2; duration: 90000; loops: Animation.Infinite; running: window.visible
     }
 
     // --- ENHANCED STARTUP ANIMATION STATES ---

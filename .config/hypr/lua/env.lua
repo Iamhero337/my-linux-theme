@@ -6,7 +6,7 @@ local env_vars = {
     -- Hardware Acceleration (Intel Raptor Lake UHD iGPU for Display & Video Decode)
     LIBVA_DRIVER_NAME = "iHD",
     XDG_SESSION_TYPE = "wayland",
-    AQ_DRM_DEVICES = "/dev/dri/card2:/dev/dri/card1",
+    AQ_DRM_DEVICES = "/dev/dri/by-path/pci-0000:00:02.0-card:/dev/dri/by-path/pci-0000:01:00.0-card",
     __GL_VRR_ALLOWED = "1",
     ELECTRON_OZONE_PLATFORM_HINT = "auto",
     MOZ_ENABLE_WAYLAND = "1",

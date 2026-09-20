@@ -46,7 +46,7 @@ Item {
     Process {
         id: gpuFetcher
         command: ["bash", "-c", "~/.config/hypr/scripts/quickshell/gpu/gpu_fetch.sh"]
-        running: true
+        running: false
         stdout: StdioCollector {
             onStreamFinished: {
                 let out = this.text ? this.text.trim() : "";
@@ -70,9 +70,16 @@ Item {
         }
     }
 
+    onVisibleChanged: {
+        if (visible) {
+            gpuFetcher.running = false;
+            gpuFetcher.running = true;
+        }
+    }
+
     Timer {
         interval: 3000
-        running: true
+        running: root.visible
         repeat: true
         onTriggered: {
             gpuFetcher.running = false;

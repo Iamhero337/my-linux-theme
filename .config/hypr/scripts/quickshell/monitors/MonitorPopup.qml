@@ -101,7 +101,7 @@ Item {
         to: Math.PI * 2
         duration: 90000
         loops: Animation.Infinite
-        running: true
+        running: window.visible
     }
     
     // -------------------------------------------------------------------------

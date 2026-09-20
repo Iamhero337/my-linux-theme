@@ -29,7 +29,7 @@
     }
   ],
   "uiScale": 1,
-  "topbarScale": 0.75,
+  "topbarScale": 0.9,
   "topbarFlush": true,
   "btAutoHide": true
 }
