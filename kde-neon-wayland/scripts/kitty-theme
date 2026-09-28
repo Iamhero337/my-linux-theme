@@ -11,12 +11,13 @@ show_help() {
     echo "Usage: kitty-theme [list | <theme-name>]"
     echo ""
     echo "Available darker themes:"
-    echo "  1) cyber-hacker        - Ultra-deep dark OLED (#07080c) with glowing cyber accents"
-    echo "  2) tokyo-night-dark    - Midnight deep obsidian (#16161e) with vibrant Tokyo palette"
+    echo "  1) obsidian-blue       - Neutral deep obsidian (#0a0b10) with electric blue & violet accents (No green)"
+    echo "  2) tokyo-night-dark    - Midnight deep dark (#16161e) with Tokyo Night palette"
     echo "  3) catppuccin-mocha    - Deep dark pastel (#11111b) Mocha Crust"
     echo "  4) vesper-black        - Pure AMOLED Pitch Black (#000000) with minimalist accents"
+    echo "  5) cyber-hacker        - Ultra-deep dark OLED (#07080c) with glowing cyber accents"
     echo ""
-    echo "Example: kitty-theme cyber-hacker"
+    echo "Example: kitty-theme obsidian-blue"
 }
 
 set_theme() {
