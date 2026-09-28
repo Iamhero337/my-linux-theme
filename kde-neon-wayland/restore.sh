@@ -98,7 +98,7 @@ cp -a "$SCRIPT_DIR/configs/dot-local-share-icons/default/index.theme" "$USER_HOM
 # Restore scripts
 mkdir -p "$USER_HOME/.local/bin"
 cp -a "$SCRIPT_DIR/scripts"/* "$USER_HOME/.local/bin/"
-chmod +x "$USER_HOME/.local/bin"/*.sh
+chmod +x "$USER_HOME/.local/bin"/* 2>/dev/null || true
 
 # Fix ownership
 chown -R "$TARGET_USER:$TARGET_USER" "$USER_CONFIG" "$USER_HOME/.icons" "$USER_HOME/.local"

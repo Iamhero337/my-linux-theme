@@ -41,6 +41,14 @@ A complete, battle-tested, high-performance **KDE Plasma 6 (Wayland)** environme
 - Synchronized across KDE Plasma 6, KWin Wayland, XWayland, GTK 3, GTK 4, systemd user environment (`systemctl --user`), and system fallback `/usr/share/icons/default/index.theme`.
 - Window manager shortcuts: Restored standard shortcuts including `Alt + F4` (Close Window) and `Win + V` (KDE Clipboard).
 
+### 7. 💻 Kitty Terminal (Ultra-Deep Dark & High-Contrast Themes)
+- **Aesthetic**: Deep dark background (`#07080c` / `#16161e`), 95% opacity with KWin glassmorphic background blur, and glowing cyber accents.
+- **Theme Switcher**: Quick-switch utility `kitty-theme` included in `~/.local/bin/kitty-theme`:
+  - `kitty-theme cyber-hacker`: Ultra-deep dark OLED (`#07080c`) with vibrant neon cyan, emerald, coral, and gold accents.
+  - `kitty-theme tokyo-night-dark`: Midnight obsidian (`#16161e`) with the iconic Tokyo Night palette.
+  - `kitty-theme catppuccin-mocha`: Deep pastel crust (`#11111b`) Mocha palette.
+  - `kitty-theme vesper-black`: Pure AMOLED pitch black (`#000000`) with warm minimalist accents.
+
 ---
 
 ## 📂 Repository Structure

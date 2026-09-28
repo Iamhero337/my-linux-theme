@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#  ◈ KITTY THEME SELECTOR & SWITCHER
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+THEMES_DIR="$HOME/.config/kitty/themes"
+CURRENT_THEME="$HOME/.config/kitty/theme.conf"
+KITTY_CONF="$HOME/.config/kitty/kitty.conf"
+
+show_help() {
+    echo "Usage: kitty-theme [list | <theme-name>]"
+    echo ""
+    echo "Available darker themes:"
+    echo "  1) cyber-hacker        - Ultra-deep dark OLED (#07080c) with glowing cyber accents"
+    echo "  2) tokyo-night-dark    - Midnight deep obsidian (#16161e) with vibrant Tokyo palette"
+    echo "  3) catppuccin-mocha    - Deep dark pastel (#11111b) Mocha Crust"
+    echo "  4) vesper-black        - Pure AMOLED Pitch Black (#000000) with minimalist accents"
+    echo ""
+    echo "Example: kitty-theme cyber-hacker"
+}
+
+set_theme() {
+    local theme="$1"
+    local file="$THEMES_DIR/${theme}.conf"
+
+    if [[ ! -f "$file" ]]; then
+        # Try finding a fuzzy match
+        local match
+        match=$(find "$THEMES_DIR" -name "*${theme}*.conf" -type f | head -n 1)
+        if [[ -n "$match" ]]; then
+            file="$match"
+            theme=$(basename "$file" .conf)
+        else
+            echo "❌ Error: Theme '${theme}' not found in $THEMES_DIR"
+            show_help
+            exit 1
+        fi
+    fi
+
+    cp "$file" "$CURRENT_THEME"
+    echo "✨ Applied Kitty theme: $theme"
+
+    # Reload all running kitty instances
+    if pgrep -x kitty >/dev/null 2>&1; then
+        kill -SIGUSR1 $(pgrep -x kitty) 2>/dev/null
+        echo "🔄 Reloaded running Kitty terminal(s)!"
+    fi
+}
+
+case "$1" in
+    ""|list|--list|-l)
+        show_help
+        ;;
+    help|--help|-h)
+        show_help
+        ;;
+    *)
+        set_theme "$1"
+        ;;
+esac
