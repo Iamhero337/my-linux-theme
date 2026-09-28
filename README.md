@@ -13,6 +13,15 @@
 
 ---
 
+## 🌟 Available Desktop Setups in this Repository
+
+| Setup | Description | Location |
+| :--- | :--- | :--- |
+| **🌌 Hyprland & Quickshell** | Dynamic tiling Wayland compositor with custom Quickshell UI, Matugen theming, and Nvidia power controls. | Root (`.config/`, `.local/`, etc.) |
+| **🚀 KDE Neon (Wayland)** | Full KDE Plasma 6 Wayland setup with CyberGRUB 2077, Post-Apocalyptic Hacker SDDM, hardware backlight persistence, and Breeze Dark styling. | [`kde-neon-wayland/`](./kde-neon-wayland/) |
+
+---
+
 ## 📖 Origin & Attribution
 
 This setup was originally built upon the gorgeous foundation of **[Serpantinum](https://github.com/ilyamiro/serpantinum)** created by **[@ilyamiro](https://github.com/ilyamiro)**. Huge appreciation and credit to the original author for the incredible aesthetic base!

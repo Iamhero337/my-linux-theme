@@ -1,0 +1,18 @@
+[Keyboard]
+NumLock=0
+
+[Libinput][1008][25413][PIXART HP Wireless Mouse]
+NaturalScroll=false
+
+[Libinput][1267][12980][VEN_04F3:00 04F3:32B4 Mouse]
+PointerAcceleration=0.400
+
+[Libinput][1267][12980][VEN_04F3:00 04F3:32B4 Touchpad]
+Enabled=true
+NaturalScroll=true
+TapToClick=true
+
+[Mouse]
+X11LibInputXAccelProfileFlat=true
+cursorSize=24
+cursorTheme=breeze_cursors

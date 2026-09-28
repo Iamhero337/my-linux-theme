@@ -1,0 +1,12 @@
+[Unit]
+Description=Keep Dell Keyboard Backlight Always On
+After=multi-user.target sleep.target
+Wants=multi-user.target sleep.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'echo 2 > /sys/class/leds/dell::kbd_backlight/brightness 2>/dev/null || true; echo Never > /sys/class/firmware-attributes/dell-wmi-sysman/attributes/KbdBacklightTimeoutAc/current_value 2>/dev/null || true; echo Never > /sys/class/firmware-attributes/dell-wmi-sysman/attributes/KbdBacklightTimeoutBatt/current_value 2>/dev/null || true; echo Bright > /sys/class/firmware-attributes/dell-wmi-sysman/attributes/KeyboardIllumination/current_value 2>/dev/null || true'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target sleep.target

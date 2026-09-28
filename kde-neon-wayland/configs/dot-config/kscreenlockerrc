@@ -1,0 +1,7 @@
+[Daemon]
+LockGrace=60
+Timeout=30
+
+[Greeter][Wallpaper][org.kde.image][General]
+Image=/usr/share/sddm/themes/sddm-astronaut-theme/Backgrounds/post-apocalyptic_hacker.png
+PreviewImage=/usr/share/sddm/themes/sddm-astronaut-theme/Backgrounds/post-apocalyptic_hacker.png

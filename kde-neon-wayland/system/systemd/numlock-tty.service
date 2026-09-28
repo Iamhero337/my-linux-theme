@@ -1,0 +1,11 @@
+[Unit]
+Description=Turn on NumLock on TTYs
+After=systemd-user-sessions.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'for tty in /dev/tty[1-6]; do [ -e "$tty" ] && setleds -D +num < "$tty" 2>/dev/null || true; done'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
